@@ -25,7 +25,7 @@ public class UserController {
 	private UserService userService;
 	
 	@GetMapping
-	public ResponseEntity<List<User>> getUsers(@RequestParam("startWith") String startWith){
+	public ResponseEntity<List<User>> getUsers(@RequestParam(value= "startWith" , required=false) String startWith){
 		return new ResponseEntity<List<User>>(userService.getUsers(startWith), HttpStatus.OK);
 	}
 	

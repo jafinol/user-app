@@ -35,7 +35,7 @@ public class UserService {
 		
 	}
 
-	public List<User> getUsers(@RequestParam(value= "startWith" , required=false) String startWith) {
+	public List<User> getUsers( String startWith) {
 		
 		if (startWith !=null) {
 			return users.stream().filter(u-> u.getUsername().startsWith(startWith)).collect(Collectors.toList());
