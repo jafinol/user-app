@@ -20,11 +20,13 @@ public class UserInRole {
 	private Integer id;
 	
 	@ManyToOne 
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "user_id",
+	referencedColumnName = "id" )
 	private User user;
 	
 	@ManyToOne 
-	@JoinColumn(name = "role_id")
+	@JoinColumn(name = "role_id",
+			referencedColumnName = "id" )
 	private Role role;
 
 	public Integer getId() {
