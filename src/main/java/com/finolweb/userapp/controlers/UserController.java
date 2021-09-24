@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.finolweb.userapp.entity.User;
 import com.finolweb.userapp.services.UserService;
 
+import io.micrometer.core.annotation.Timed;
+
 
 @RestController
 @RequestMapping("/users")
@@ -35,6 +37,7 @@ public class UserController {
 //	    }
 		
 	 	@GetMapping
+	 	@Timed("get.users")
 	    public ResponseEntity<Page<User>> getUsers(@RequestParam(value= "page", defaultValue="0" , required=false ) int page,@RequestParam(value= "size", defaultValue="1000" , required=false) int size) {
 	        return new ResponseEntity<Page<User>>(service.getUsers( page,  size), HttpStatus.OK);
 	    }
