@@ -1,82 +1,65 @@
 package com.finolweb.userapp.services;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.annotation.PostConstruct;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.finolweb.userapp.models.User;
-import com.github.javafaker.Faker;
+import com.finolweb.userapp.entity.User;
+import com.finolweb.userapp.repositories.UserRepository;
 
 @Service
 public class UserService {
 	
 	@Autowired
-	private Faker faker;
+    private UserRepository UserRepository;
 	
 	
-	private List<User> users= new ArrayList<>();
-	
-	@PostConstruct
-	public void init() {
-		
-		for (int i=0 ; i<100 ; i++) {
-			
-		users.add(new User( faker.funnyName().name(), faker.name().username(), faker.dragonBall().character() ));
-		
-		}
-		
-	}
+    public List<User> getUsers() {
+        return UserRepository.findAll();
+    }
+    
+   
+    public User createUser(User user) {
+        return UserRepository.save(user);
+    }
+    
+    
+    
+    public User updateUser( Integer id, User user) {
+    	Optional<User> result = UserRepository.findById(id);
+    	if (result.isPresent()) {
+    		return UserRepository.save(user);
+    	}
+    	else {
+    		throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("User id %d doesnt exits", id));
+    	}
+    }
+    
+    public void deleteUser( Integer id) {
+    	Optional<User> result = UserRepository.findById(id);
+    	if (result.isPresent()) {
+    		UserRepository.delete(result.get());
+    	}
+    	else {
+    		throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("User id %d doesnt exits", id));
+    	}
+    }
 
-	public List<User> getUsers( String startWith) {
-		
-		if (startWith !=null) {
-			return users.stream().filter(u-> u.getUsername().startsWith(startWith)).collect(Collectors.toList());
-		}
-		else {
-			return users;
-		}
-			
+	public User getUserById(Integer userId) {
+		return UserRepository.findById(userId).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("User id %d doesnt exits", userId)) );
 		
 	}
-	
 	
 	public User getUserByUsername(String username) {
-		return users.stream().filter(u -> u.getUsername().equals(username)).findAny()
-		.orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("User %s not found", username)));
+		return UserRepository.findByUsername(username).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Username %d doesnt exits", username)) );
 	}
 	
-	
-	public User createUser(User user) {
-		if (users.stream().anyMatch(u -> u.getUsername().equals(user.getUsername() ))) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, String.format("User %s not found", user.getUsername()));
-		}
-		users.add(user);
-		return user;
-	
+	public User getUserByUsernameAndPassword(String username, String password) {
+		return UserRepository.findByUsernameAndPassword(username,password ).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Username %s doesnt exits", username)) );
 	}
-	
-	
-	public User updateUser(User user, String username ) {
-		User userToBeUpdated =  getUserByUsername(username);
-		userToBeUpdated.setNickName(user.getNickName());
-		userToBeUpdated.setPassword(user.getPassword());
-		return userToBeUpdated;
-	
-	}
-	
-	
-	public void deleteUser(String username) {
-		User userByUsername = getUserByUsername(username);
-		users.remove(userByUsername);
-		
-	}
-	
+
 }
