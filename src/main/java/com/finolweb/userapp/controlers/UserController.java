@@ -3,6 +3,7 @@ package com.finolweb.userapp.controlers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,9 +29,20 @@ public class UserController {
 		@Autowired
 		private UserService service;
 	
+//	 	@GetMapping
+//	    public ResponseEntity<List<User>> getUsers() {
+//	        return new ResponseEntity<List<User>>(service.getUsers(), HttpStatus.OK);
+//	    }
+		
 	 	@GetMapping
-	    public ResponseEntity<List<User>> getUsers() {
-	        return new ResponseEntity<List<User>>(service.getUsers(), HttpStatus.OK);
+	    public ResponseEntity<Page<User>> getUsers(@RequestParam(value= "page", defaultValue="0" , required=false ) int page,@RequestParam(value= "size", defaultValue="1000" , required=false) int size) {
+	        return new ResponseEntity<Page<User>>(service.getUsers( page,  size), HttpStatus.OK);
+	    }
+	    
+	 	
+	 	@GetMapping("/usernames")
+	    public ResponseEntity<Page<String>> getUsernames(@RequestParam(value= "page", defaultValue="0" , required=false ) int page,@RequestParam(value= "size", defaultValue="1000" , required=false) int size) {
+	        return new ResponseEntity<Page<String>>(service.getUsernames(page,  size), HttpStatus.OK);
 	    }
 	    
 		@GetMapping(value="/{userId}")

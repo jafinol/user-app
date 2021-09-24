@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,8 +20,14 @@ public class UserService {
     private UserRepository UserRepository;
 	
 	
-    public List<User> getUsers() {
-        return UserRepository.findAll();
+//    public List<User> getUsers(int page, int size) {
+//    	UserRepository.findAll(PageRequest.of(page, size));       
+//    	return UserRepository.findAll();
+//    }
+    
+    public Page<User> getUsers(int page, int size) {
+    	    
+    	return UserRepository.findAll(PageRequest.of(page, size));   
     }
     
    
@@ -27,7 +35,10 @@ public class UserService {
         return UserRepository.save(user);
     }
     
-    
+  public Page<String> getUsernames(int page, int size) {
+	  return UserRepository.findUsernames(PageRequest.of(page, size));
+	
+}
     
     public User updateUser( Integer id, User user) {
     	Optional<User> result = UserRepository.findById(id);

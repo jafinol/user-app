@@ -26,7 +26,7 @@ public class UserAppApplication implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		// TODO Auto-generated method stub
-		for (int i=0 ; i<100 ; i++) {
+		for (int i=0 ; i<100000 ; i++) {
 			User user=new User();
 			user.setUsername(faker.name().username());
 			user.setPassword(faker.dragonBall().character());
