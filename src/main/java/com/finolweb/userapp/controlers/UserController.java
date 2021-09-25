@@ -20,6 +20,9 @@ import com.finolweb.userapp.entity.User;
 import com.finolweb.userapp.services.UserService;
 
 import io.micrometer.core.annotation.Timed;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 
 @RestController
@@ -49,6 +52,12 @@ public class UserController {
 	    }
 	    
 		@GetMapping(value="/{userId}")
+		@ApiOperation(value="Retsurn a user for a given user id", response=User.class)
+		@ApiResponses(value= {
+				@ApiResponse(code=200, message="The record was found"),
+				@ApiResponse(code=404, message="The record was not found")
+		}
+				)
 		public ResponseEntity<User> getUsersById(@PathVariable("userId") Integer userId){
 			return new ResponseEntity<>(service.getUserById(userId), HttpStatus.OK);
 		}
