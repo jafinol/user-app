@@ -69,6 +69,18 @@ public class UserInRole {
 		UserInRole other = (UserInRole) obj;
 		return Objects.equals(id, other.id);
 	}
+
+	public UserInRole() {
+		super();
+	}
+
+	public UserInRole( User user, Role role) {
+		super();
+		this.user = user;
+		this.role = role;
+	}
+	
+	
 	
 	
 	

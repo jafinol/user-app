@@ -56,6 +56,17 @@ public class Role {
 		return Objects.equals(id, other.id);
 	}
 
+	public Role(String name) {
+		super();
+		this.name = name;
+	}
+
+	public Role() {
+		super();
+		
+	}
+
+	
 	
 	
 }

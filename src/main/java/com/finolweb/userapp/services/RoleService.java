@@ -5,17 +5,33 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.finolweb.userapp.entity.Role;
+import com.finolweb.userapp.entity.User;
+import com.finolweb.userapp.models.FinolSecurityRule;
 import com.finolweb.userapp.repositories.RoleRepository;
+import com.finolweb.userapp.repositories.UserInRoleRepository;
 
 @Service
+@FinolSecurityRule
 public class RoleService {
 	
 	@Autowired
     private RoleRepository repository;
+	
+	@Autowired
+    private UserInRoleRepository userInRoleRepository;
+	
+	//@Secured({"ROLE_ADMIN"})
+	
+    public List<User> getByRolName(String roleName) {
+        return userInRoleRepository.findByUserByRoleName(roleName);
+    }
 	
 	
     public List<Role> getRoles() {

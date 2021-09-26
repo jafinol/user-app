@@ -1,17 +1,27 @@
 package com.finolweb.userapp;
 
+import java.util.Random;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.finolweb.userapp.entity.Role;
 import com.finolweb.userapp.entity.User;
+import com.finolweb.userapp.entity.UserInRole;
+import com.finolweb.userapp.repositories.RoleRepository;
+import com.finolweb.userapp.repositories.UserInRoleRepository;
 import com.finolweb.userapp.repositories.UserRepository;
 import com.github.javafaker.Faker;
 
 @SpringBootApplication
 public class UserAppApplication implements ApplicationRunner {
+	
+	private static Logger LOG = LoggerFactory.getLogger(UserAppApplication.class);
 
 	@Autowired
 	private Faker faker;
@@ -19,18 +29,39 @@ public class UserAppApplication implements ApplicationRunner {
 	@Autowired
 	private UserRepository repository;
 	
+	@Autowired
+	private RoleRepository roleRepository;
+	
+	
+	@Autowired
+	private UserInRoleRepository userInRoleRepository;
+	
 	public static void main(String[] args) {
 		SpringApplication.run(UserAppApplication.class, args);
 	}
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		// TODO Auto-generated method stub
-		for (int i=0 ; i<100000 ; i++) {
+		
+		Role roles[]= {new Role("ADMIN"),new Role("SUPPORT"),new Role("USER")};
+		
+		for (Role role : roles) {
+			roleRepository.save(role);
+			
+		}
+			
+		
+		
+		for (int i=0 ; i<10 ; i++) {
 			User user=new User();
 			user.setUsername(faker.name().username());
 			user.setPassword(faker.dragonBall().character());
-			repository.save(user);
+			User created = repository.save(user);
+			
+			UserInRole userInRole = new UserInRole(created, roles[new Random().nextInt(3)]);
+			LOG.info("User Created username {}, password {}, rol {}", created.getUsername(), created.getPassword(), userInRole.getRole().getName()  );
+			userInRoleRepository.save(userInRole);
+			
 		
 		}
 	}
