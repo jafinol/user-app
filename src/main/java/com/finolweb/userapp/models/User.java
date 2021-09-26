@@ -1,7 +1,8 @@
 package com.finolweb.userapp.models;
 
+
 public class User {
-	
+
 	
 	private String nickName;
 	private String username;

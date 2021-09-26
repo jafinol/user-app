@@ -1,5 +1,6 @@
 package com.finolweb.userapp.entity;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -13,7 +14,11 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "user")
-public class User {
+public class User implements Serializable {
+
+	private static final long serialVersionUID = 2192593770602576535L;
+
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
@@ -25,10 +30,6 @@ public class User {
 	@Column(name = "password")
 	private String password;
 	
-	@OneToOne 
-	@JoinColumn(name ="profile_id",
-	referencedColumnName ="id")
-	private Profile profile;
 
 	public Integer getId() {
 		return id;
@@ -54,13 +55,6 @@ public class User {
 		this.password = password;
 	}
 
-	public Profile getProfile() {
-		return profile;
-	}
-
-	public void setProfile(Profile profile) {
-		this.profile = profile;
-	}
 
 	@Override
 	public int hashCode() {

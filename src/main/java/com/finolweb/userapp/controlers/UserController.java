@@ -41,7 +41,7 @@ public class UserController {
 		
 	 	@GetMapping
 	 	@Timed("get.users")
-	    public ResponseEntity<Page<User>> getUsers(@RequestParam(value= "page", defaultValue="0" , required=false ) int page,@RequestParam(value= "size", defaultValue="1000" , required=false) int size) {
+	    public ResponseEntity<Page<User>> getUsers(@RequestParam(value= "page", defaultValue="0" , required=false ) int page,@RequestParam(value= "size", defaultValue="100000" , required=false) int size) {
 	        return new ResponseEntity<Page<User>>(service.getUsers( page,  size), HttpStatus.OK);
 	    }
 	    
@@ -90,4 +90,9 @@ public class UserController {
 	    }
 	
 
+	    @DeleteMapping("/del/{username}")
+	    public ResponseEntity<Void> deleteUserByUsername(@PathVariable("username") String username) {
+	    	service.deleteUserByUsername(username);
+	        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	    }
 }

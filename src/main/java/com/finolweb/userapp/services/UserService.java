@@ -3,7 +3,11 @@ package com.finolweb.userapp.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -19,6 +23,7 @@ public class UserService {
 	@Autowired
     private UserRepository UserRepository;
 	
+	private static Logger LOG = LoggerFactory.getLogger(UserService.class);
 	
 //    public List<User> getUsers(int page, int size) {
 //    	UserRepository.findAll(PageRequest.of(page, size));       
@@ -56,17 +61,35 @@ public class UserService {
     		UserRepository.delete(result.get());
     	}
     	else {
-    		throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("User id %d doesnt exits", id));
+    		throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("User id %s doesnt exits", id));
     	}
     }
 
 	public User getUserById(Integer userId) {
-		return UserRepository.findById(userId).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("User id %d doesnt exits", userId)) );
+		return UserRepository.findById(userId).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("User id %s doesnt exits", userId)) );
 		
 	}
 	
+	@CacheEvict("users")
+	public void deleteUserByUsername(String username){
+		User user = getUserByUsername(username);
+		UserRepository.delete(user);
+	}
+
+	
+	
+	@Cacheable("users")
 	public User getUserByUsername(String username) {
-		return UserRepository.findByUsername(username).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Username %d doesnt exits", username)) );
+		LOG.info("Getting user by username {}", username);
+		try
+		{
+			Thread.sleep(3000);
+		}
+		catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+		return UserRepository.findByUsername(username).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Username %s doesnt exits", username)) );
 	}
 	
 	public User getUserByUsernameAndPassword(String username, String password) {

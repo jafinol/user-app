@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -21,12 +23,28 @@ public class Profile {
 	@Column(name = "name")
 	private String name;
 	
-	@Column(name = "lastname")
+	@Column(name = "lastName")
 	private String lastName;
 
 	@Column(name = "birthdate")
 	//@Temporal(TemporalType.DATE)
 	private Date birthDate;
+	
+	
+	@OneToOne 
+	@JoinColumn(name ="user_id",
+	referencedColumnName ="id")
+	private User user;
+
+	
+	
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 
 	public Integer getId() {
 		return id;
@@ -82,6 +100,10 @@ public class Profile {
 			return false;
 		Profile other = (Profile) obj;
 		return Objects.equals(id, other.id);
+	}
+
+	public Profile() {
+	
 	}
 	
 	
